@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | AlgoVista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dashboard-body">
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand-wrap">
+            <div class="brand-icon">📊</div>
+            <div class="brand-text">
+                <h1>AlgoVista</h1>
+                <p>Sorting Algorithm Visualizer</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-badge">Interactive • Step-by-step • Visual</div>
+            <span id="userEmail" class="user-email"></span>
+            <button id="logoutBtn" class="logout-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="dashboard-shell">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar-panel">
+
+        <!-- CONTROLS -->
+        <div class="sidebar-section controls-card">
+            <div class="panel-title">
+                <span class="panel-title-icon">⚙️</span>
+                <h2>Controls</h2>
+            </div>
+
+            <div class="control-group">
+                <label for="algorithm">Algorithm</label>
+                <select id="algorithm">
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="quick">Quick Sort</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="inputData">Input Array</label>
+                <input type="text" id="inputData" placeholder="e.g. 64, 34, 25, 12, 22, 11, 90">
+                <small class="helper-text">Enter comma-separated integers. Max 15 values.</small>
+            </div>
+
+            <div class="control-group">
+                <label for="speed">Playback Speed</label>
+                <input type="range" id="speed" min="100" max="1500" value="600">
+                <div class="speed-labels">
+                    <span>Fast</span>
+                    <span>Slow</span>
+                </div>
+            </div>
+
+            <div class="button-stack">
+                <button id="startBtn" class="primary-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Run Visualization
+                </button>
+
+                <button id="randomBtn" class="secondary-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Random Array
+                </button>
+
+                <button id="exportBtn" class="secondary-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-8m0 8l-3-3m3 3l3-3M5 20h14" />
+                    </svg>
+                    Export Snapshot
+                </button>
+            </div>
+        </div>
+
+        <!-- ALGORITHM INFO -->
+        <div class="sidebar-section info-card">
+            <div class="panel-title">
+                <span class="panel-title-icon">ℹ️</span>
+                <h2>Algorithm Info</h2>
+            </div>
+
+            <h3 id="algoName" class="algo-name">Bubble Sort</h3>
+            <p id="algoDescription" class="algo-description"></p>
+
+            <div class="complexity-grid">
+                <div class="complexity-box">
+                    <span class="complexity-label">Best</span>
+                    <span id="timeBest" class="complexity-value">-</span>
+                </div>
+                <div class="complexity-box">
+                    <span class="complexity-label">Worst</span>
+                    <span id="timeWorst" class="complexity-value">-</span>
+                </div>
+                <div class="complexity-box">
+                    <span class="complexity-label">Space</span>
+                    <span id="space" class="complexity-value">-</span>
+                </div>
+            </div>
+
+            <!-- Metrics moved here from removed Session Insights -->
+            <div class="metrics-row">
+                <div class="metric-pill">
+                    <span class="metric-pill-label">Comparisons</span>
+                    <span id="metricComparisons" class="metric-pill-value">0</span>
+                </div>
+                <div class="metric-pill">
+                    <span class="metric-pill-label">Swaps</span>
+                    <span id="metricSwaps" class="metric-pill-value">0</span>
+                </div>
+                <div class="metric-pill">
+                    <span class="metric-pill-label">Steps</span>
+                    <span id="metricSteps" class="metric-pill-value">0</span>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- MAIN VISUAL AREA -->
+    <section class="workspace-panel">
+        <div class="workspace-topbar">
+            <div class="workspace-left">
+                <div class="crumb active" id="selectedAlgoLabel">Bubble Sort</div>
+            </div>
+            <div class="workspace-right">
+                <div class="status-chip status-ready" id="statusChip">Ready</div>
+                <div class="step-display">
+                    <span id="stepCounter">0</span>
+                    <span>/</span>
+                    <span id="totalSteps">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="workspace-content">
+            <!-- LEFT: VISUALIZATION -->
+            <div class="visual-column">
+                <div class="viz-card chart-card" id="exportArea">
+                    <div class="viz-card-header">
+                        <span>3D ChartTracer</span>
+                    </div>
+                    <div id="arrayContainer" class="chart-stage">
+                        <div class="empty-state dark-empty">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="52" height="52">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <p>Enter numbers and run an algorithm to begin the visualization.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-card array-card">
+                    <div class="viz-card-header">
+                        <span>Array1DTracer</span>
+                    </div>
+                    <div id="arrayTrace" class="array-trace">
+                        <div class="array-placeholder">Array state will appear here</div>
+                    </div>
+                </div>
+
+                <!-- ACCESS HEATMAP -->
+                <div class="viz-card heatmap-card">
+                    <div class="viz-card-header heatmap-header-row">
+                        <span>🔥 Index Access Heatmap</span>
+                        <span class="heatmap-subtitle">Tracks how many times each index has been compared or swapped — darker = more activity</span>
+                    </div>
+                    <div class="heatmap-body">
+                        <div id="heatmapGrid" class="heatmap-grid">
+                            <div class="heatmap-placeholder">Run an algorithm to see the access heatmap</div>
+                        </div>
+                        <div class="heatmap-legend-row">
+                            <span class="heatmap-legend-label">Less accessed</span>
+                            <div class="heatmap-legend-bar"></div>
+                            <span class="heatmap-legend-label">Most accessed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="player-bar">
+                    <div class="player-controls">
+                        <button id="prevBtn" class="player-btn" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Previous
+                        </button>
+
+                        <button id="autoBtn" class="player-btn player-btn-primary" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            </svg>
+                            <span id="autoBtnText">Auto Play</span>
+                        </button>
+
+                        <button id="nextBtn" class="player-btn" disabled>
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="player-mini-stats">
+                        <div class="mini-stat-box">
+                            <span class="mini-stat-label">State</span>
+                            <span id="miniStateText" class="mini-stat-value">Idle</span>
+                        </div>
+                        <div class="mini-stat-box">
+                            <span class="mini-stat-label">Array Size</span>
+                            <span id="miniArraySize" class="mini-stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: EXPLANATION -->
+            <div class="insights-column">
+                <div class="viz-card explanation-card">
+                    <div class="viz-card-header">
+                        <span>Current Step</span>
+                    </div>
+                    <div class="explanation-panel">
+                        <div class="current-step-badge">
+                            Step <span id="currentStepBadge">0</span>
+                        </div>
+
+                        <div class="explanation-block">
+                            <div class="explanation-heading">Explanation</div>
+                            <p id="explanationText">
+                                Select an algorithm and input array to see step-by-step explanations.
+                            </p>
+                        </div>
+
+                        <div class="step-hint-box">
+                            <div class="step-hint-title">Color Meaning</div>
+                            <div class="legend-list">
+                                <div class="legend-item">
+                                    <span class="legend-dot legend-default"></span>
+                                    <span>Normal</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot legend-compare"></span>
+                                    <span>Comparing</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot legend-swap"></span>
+                                    <span>Swapping</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot legend-sorted"></span>
+                                    <span>Sorted</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot legend-pivot"></span>
+                                    <span>Pivot</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LIVE EFFICIENCY METER -->
+                        <div class="novelty-card" id="efficiencyCard">
+                            <div class="novelty-title"><span class="novelty-icon">⚡</span>Live Efficiency Meter</div>
+                            <div class="novelty-desc">Actual vs theoretical operations at this step</div>
+                            <div class="efficiency-bars">
+                                <div class="eff-row">
+                                    <span class="eff-label">Comparisons</span>
+                                    <div class="eff-track"><div class="eff-fill eff-actual" id="effActualComp" style="width:0%"></div><div class="eff-fill eff-theory" id="effTheoryComp" style="width:100%"></div></div>
+                                    <span class="eff-val" id="effCompVal">0 / —</span>
+                                </div>
+                                <div class="eff-row">
+                                    <span class="eff-label">Swaps</span>
+                                    <div class="eff-track"><div class="eff-fill eff-actual eff-swap" id="effActualSwap" style="width:0%"></div><div class="eff-fill eff-theory" id="effTheorySwap" style="width:100%"></div></div>
+                                    <span class="eff-val" id="effSwapVal">0 / —</span>
+                                </div>
+                                <div class="eff-row">
+                                    <span class="eff-label">Progress</span>
+                                    <div class="eff-track"><div class="eff-fill eff-progress" id="effProgress" style="width:0%"></div></div>
+                                    <span class="eff-val" id="effProgressVal">0%</span>
+                                </div>
+                            </div>
+                            <div class="eff-verdict" id="effVerdict">Run an algorithm to see efficiency analysis.</div>
+                        </div>
+
+                        <!-- INVERSIONS COUNTER -->
+                        <div class="novelty-card" id="inversionsCard">
+                            <div class="novelty-title"><span class="novelty-icon">🔁</span>Inversions Counter</div>
+                            <div class="novelty-desc">Pairs (i,j) where i &lt; j but arr[i] &gt; arr[j] — measures disorder</div>
+                            <div class="inv-display">
+                                <div class="inv-big"><span id="invCount">—</span><span class="inv-unit">inversions</span></div>
+                                <div class="inv-bar-wrap">
+                                    <div class="inv-bar-track"><div class="inv-bar-fill" id="invBarFill" style="width:0%"></div></div>
+                                    <div class="inv-bar-labels"><span>Sorted (0)</span><span id="invMax">Max (—)</span></div>
+                                </div>
+                                <div class="inv-delta" id="invDelta"></div>
+                            </div>
+                        </div>
+
+                        <!-- ALGORITHM RACE -->
+                        <div class="novelty-card" id="raceCard">
+                            <div class="novelty-title"><span class="novelty-icon">🏁</span>Algorithm Race</div>
+                            <div class="novelty-desc">Compare all 4 algorithms on your array — fewest steps wins</div>
+                            <div id="raceContent">
+                                <button id="raceBtn" class="race-start-btn">Run Race on Current Array</button>
+                            </div>
+                            <div id="raceResults" class="race-results" style="display:none;"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="toastContainer"></div>
+
+<script type="module" src="/static/firebase-config.js"></script>
+<script type="module" src="/static/auth.js"></script>
+<script src="/static/main.js"></script>
+
+</body>
+</html>
